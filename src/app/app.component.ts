@@ -1,31 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
+import { AccountsService } from './accounts.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  accounts = [
-    {
-      name: 'Master Account',
-      status: 'active'
-    },
-    {
-      name: 'Testaccount',
-      status: 'inactive'
-    },
-    {
-      name: 'Hidden Account',
-      status: 'unknown'
-    }
-  ];
+export class AppComponent implements OnInit {
+  accounts: {name: string, status: string}[] = [];
 
-  onAccountAdded(newAccount: {name: string, status: string}) {
-    this.accounts.push(newAccount);
+  constructor(private accountService: AccountsService){}
+
+  ngOnInit(): void {
+    this.accounts = this.accountService.accounts;
   }
 
-  onStatusChanged(updateInfo: {id: number, newStatus: string}) {
-    this.accounts[updateInfo.id].status = updateInfo.newStatus;
-  }
 }
+
+// If you're using Angular 6+ (check your package.json  to find out), 
+// you can provide application-wide services in a different way.
+
+// Instead of adding a service class to the providers[]  array in AppModule 
+// , you can set the following config in @Injectable() :
+
+// @Injectable({providedIn: 'root'})
+// export class MyService { ... }
+// This is exactly the same as:
+
+// export class MyService { ... }
+// and
+
+// import { MyService } from './path/to/my.service';
+ 
+// @NgModule({
+//     ...
+//     providers: [MyService]
+// })
+// export class AppModule { ... }
+// Using this new syntax is completely optional, the traditional syntax 
+// (using providers[] ) will still work. The "new syntax" does offer one 
+// advantage though: Services can be loaded lazily by Angular 
+// (behind the scenes) and redundant code can be removed automatically. 
+// This can lead to a better performance and loading speed - though this 
+// really only kicks in for bigger services and apps in general.
